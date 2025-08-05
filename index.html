@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاضرة الأشجار الثنائية - جامعة البعث</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            line-height: 1.8;
+            background: linear-gradient(135deg, #1a2a6c, #2a4d69, #4b86b4);
+            color: #333;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px 40px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 15px;
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 12px 20px;
+            min-width: 220px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .content {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            padding: 25px 0;
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+        
+        .sidebar h2 {
+            padding: 15px 25px;
+            background: #1a2530;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar h2 i {
+            margin-left: 10px;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar li {
+            padding: 12px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .sidebar li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .sidebar li:hover {
+            background: #3498db;
+            padding-right: 30px;
+        }
+        
+        .sidebar li.active {
+            background: #2980b9;
+            border-left: 5px solid #e74c3c;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            max-height: calc(100vh - 150px);
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease;
+            scroll-margin-top: 20px;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section h2 i {
+            margin-left: 12px;
+            color: #e74c3c;
+        }
+        
+        .section h3 {
+            color: #2980b9;
+            font-size: 1.5rem;
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section h3 i {
+            margin-left: 10px;
+        }
+        
+        .section p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .comparison-table td {
+            padding: 15px;
+            border: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .comparison-table tr:hover {
+            background: #e3f2fd;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .code-comment {
+            color: #7fdbca;
+        }
+        
+        .visualization {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .tree-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+            min-height: 300px;
+        }
+        
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .tree-node {
+            width: 60px;
+            height: 60px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 40px;
+            position: relative;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .tree-node:hover {
+            transform: scale(1.1);
+            background: #e74c3c;
+        }
+        
+        .tree-node.root {
+            background: #e74c3c;
+        }
+        
+        .tree-node.leaf {
+            background: #27ae60;
+        }
+        
+        .tree-node.internal {
+            background: #f39c12;
+        }
+        
+        .tree-connector {
+            position: absolute;
+            height: 30px;
+            width: 2px;
+            background: #7f8c8d;
+            z-index: 1;
+        }
+        
+        .tree-horizontal {
+            position: absolute;
+            height: 2px;
+            background: #7f8c8d;
+            z-index: 1;
+        }
+        
+        .memory-diagram {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .memory-segment {
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 200px;
+            text-align: center;
+            background: #e3f2fd;
+        }
+        
+        .memory-segment h4 {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            margin: -15px -15px 15px -15px;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: #2c3e50;
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            background: #ffeaa7;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .note {
+            background: #d5f5e3;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #3498db;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .tree-representation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .representation-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .representation-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tree"></i> محاضرة الأشجار الثنائية</h1>
+            <div class="header-info">
+                <div class="info-box">
+                    <i class="fas fa-user-graduate"></i> الدكتور: ناديا خرسان
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-book"></i> الخوارزميات وبُنى المعطيات 1
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-university"></i> جامعة البعث - كلية الهندسة المعلوماتية
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="sidebar">
+                <h2><i class="fas fa-list"></i> محتويات المحاضرة</h2>
+                <ul>
+                    <li class="active"><a href="#intro">مقدمة عن الأشجار</a></li>
+                    <li><a href="#definition">تعريف الشجرة</a></li>
+                    <li><a href="#terms">مصطلحات الأشجار</a></li>
+                    <li><a href="#nodes">أنواع العقد</a></li>
+                    <li><a href="#dimensions">أبعاد الشجرة</a></li>
+                    <li><a href="#applications">تطبيقات الأشجار</a></li>
+                    <li><a href="#representation">تمثيل الأشجار</a></li>
+                    <li><a href="#binary">الأشجار الثنائية</a></li>
+                    <li><a href="#conclusion">الخلاصة</a></li>
+                </ul>
+            </div>
+            
+            <div class="main-content">
+                <!-- مقدمة عن الأشجار -->
+                <div class="section" id="intro">
+                    <h2><i class="fas fa-tree"></i> مقدمة عن الأشجار</h2>
+                    
+                    <p>الأشجار هي نوع من أنواع <span class="highlight">بُنى المعطيات غير الخطية</span> (Non-Linear Data Structures)، حيث لا توجد علاقة ترتيب كلي بين عناصرها ولكن هناك علاقة ترتيب جزئي.</p>
+                    
+                    <div class="note">
+                        <i class="fas fa-lightbulb"></i> <strong>ملاحظة هامة:</strong> الأشجار تنظم البيانات بشكل هرمي (Hierarchical) مما يجعلها مناسبة للعديد من التطبيقات مثل تنظيم الملفات وقواعد البيانات.
+                    </div>
+                    
+                    <div class="visualization">
+                        <div class="tree-diagram">
+                            <div class="tree-level">
+                                <div class="tree-node root">A</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node">B</div>
+                                <div class="tree-node">C</div>
+                                <div class="tree-node">D</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node leaf">E</div>
+                                <div class="tree-node leaf">F</div>
+                                <div class="tree-node leaf">G</div>
+                                <div class="tree-node leaf">H</div>
+                            </div>
+                            
+                            <!-- Tree connectors -->
+                            <div class="tree-connector" style="top: 60px; left: 50%; height: 60px;"></div>
+                            
+                            <div class="tree-horizontal" style="top: 120px; left: 30%; width: 40%;"></div>
+                            <div class="tree-connector" style="top: 120px; left: 30%; height: 60px;"></div>
+                            <div class="tree-connector" style="top: 120px; left: 50%; height: 60px;"></div>
+                            <div class="tree-connector" style="top: 120px; left: 70%; height: 60px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- تعريف الشجرة -->
+                <div class="section" id="definition">
+                    <h2><i class="fas fa-book"></i> تعريف الشجرة</h2>
+                    
+                    <p>الشجرة هي مجموعة منتهية من العناصر تسمى <span class="highlight">عقد (Nodes)</span> مرتبطة بعضها ببعض <span class="highlight">بروابط (Links or Edges)</span>، وهي منظمة تنظيماً هرمياً (Hierarchical) لا يحوي حلقات مغلقة.</p>
+                    
+                    <h3><i class="fas fa-star"></i> خصائص الشجرة:</h3>
+                    <ul>
+                        <li>توجد عقدة مميزة ووحيدة نسميها <span class="highlight">الجذر (Root)</span></li>
+                        <li>العقد المتبقية تجزأ إلى n ≥ 0 من المجموعات المنفصلة تسمى <span class="highlight">الأشجار الفرعية (Sub-trees)</span></li>
+                        <li>كل شجرة فرعية تتألف بدورها من عقدة جذر وأشجار فرعية أخرى (تعريف عودي)</li>
+                    </ul>
+                    
+                    <div class="visualization">
+                        <div class="tree-diagram">
+                            <div class="tree-level">
+                                <div class="tree-node root">A</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node">B</div>
+                                <div class="tree-node">C</div>
+                                <div class="tree-node">D</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node">E</div>
+                                <div class="tree-node">F</div>
+                                <div class="tree-node">G</div>
+                                <div class="tree-node">H</div>
+                                <div class="tree-node">I</div>
+                                <div class="tree-node">J</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node leaf">K</div>
+                                <div class="tree-node leaf">L</div>
+                                <div class="tree-node leaf">M</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- مصطلحات الأشجار -->
+                <div class="section" id="terms">
+                    <h2><i class="fas fa-bookmark"></i> مصطلحات الأشجار</h2>
+                    
+                    <div class="comparison-table">
+                        <tr>
+                            <th>المصطلح</th>
+                            <th>التعريف</th>
+                            <th>مثال</th>
+                        </tr>
+                        <tr>
+                            <td>الجذر (Root)</td>
+                            <td>العقدة الأعلى في الشجرة وليس لها أب</td>
+                            <td>العقدة A</td>
+                        </tr>
+                        <tr>
+                            <td>الأب (Parent)</td>
+                            <td>عقدة لها شجرة فرعية واحدة على الأقل</td>
+                            <td>العقدة D أب للعقد H, I, J</td>
+                        </tr>
+                        <tr>
+                            <td>الابن (Child)</td>
+                            <td>عقدة لها أب مباشر واحد</td>
+                            <td>العقدة H ابن للعقدة D</td>
+                        </tr>
+                        <tr>
+                            <td>الأخ (Sibling)</td>
+                            <td>عقدتان لهما نفس الأب</td>
+                            <td>العقد H, I, J أخوة</td>
+                        </tr>
+                        <tr>
+                            <td>السلف (Ancestor)</td>
+                            <td>جميع العقد على المسار من الجذر إلى العقدة</td>
+                            <td>A, D سلفان للعقدة H</td>
+                        </tr>
+                        <tr>
+                            <td>الخلف (Descendant)</td>
+                            <td>جميع العقد في الأشجار الفرعية للعقدة</td>
+                            <td>K, L, M خلفاء للعقدة H</td>
+                        </tr>
+                        <tr>
+                            <td>درجة العقدة (Degree)</td>
+                            <td>عدد الأبناء المباشرين للعقدة</td>
+                            <td>درجة العقدة A هي 3</td>
+                        </tr>
+                        <tr>
+                            <td>درجة الشجرة</td>
+                            <td>الدرجة العظمى للعقد في الشجرة</td>
+                            <td>درجة الشجرة هي 3</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- أنواع العقد -->
+                <div class="section" id="nodes">
+                    <h2><i class="fas fa-sitemap"></i> أنواع العقد</h2>
+                    
+                    <div class="tree-representation">
+                        <div class="representation-card">
+                            <h3><i class="fas fa-circle-notch"></i> العقدة الداخلية (Internal Node)</h3>
+                            <p>عقدة لها عقدة ولد واحدة على الأقل (لها أبناء)</p>
+                            <div style="text-align: center; margin: 15px 0;">
+                                <div class="tree-node internal" style="margin: auto;">B</div>
+                            </div>
+                            <p>مثال: العقد A, B, C, D, E, H</p>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-leaf"></i> الورقة (Leaf Node)</h3>
+                            <p>عقدة ليس لها أبناء (درجتها = 0)</p>
+                            <div style="text-align: center; margin: 15px 0;">
+                                <div class="tree-node leaf" style="margin: auto;">F</div>
+                            </div>
+                            <p>مثال: العقد K, L, F, G, M, I, J</p>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-star"></i> الجذر (Root Node)</h3>
+                            <p>العقدة الأعلى في الشجرة وليس لها أب</p>
+                            <div style="text-align: center; margin: 15px 0;">
+                                <div class="tree-node root" style="margin: auto;">A</div>
+                            </div>
+                            <p>مثال: العقدة A</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- أبعاد الشجرة -->
+                <div class="section" id="dimensions">
+                    <h2><i class="fas fa-ruler-combined"></i> أبعاد الشجرة</h2>
+                    
+                    <div class="tree-representation">
+                        <div class="representation-card">
+                            <h3><i class="fas fa-arrow-up"></i> ارتفاع الشجرة (Height)</h3>
+                            <p>طول أطول مسار من الجذر إلى الورقة (عدد الوصلات)</p>
+                            <p>height(A) = 3</p>
+                            <p>height(B) = 2</p>
+                            <p>height(M) = 0</p>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-arrow-down"></i> عمق العقدة (Depth)</h3>
+                            <p>طول المسار من الجذر إلى العقدة (عدد الوصلات)</p>
+                            <p>depth(A) = 0</p>
+                            <p>depth(B) = 1</p>
+                            <p>depth(M) = 3</p>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-layer-group"></i> مستوى العقدة (Level)</h3>
+                            <p>عمق العقدة (Level(x) = Depth(x))</p>
+                            <p>Level 0: A</p>
+                            <p>Level 1: B, C, D</p>
+                            <p>Level 2: E, F, G, H, I, J</p>
+                            <p>Level 3: K, L, M</p>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-table">
+                        <tr>
+                            <th>البُعد</th>
+                            <th>التعريف</th>
+                            <th>قيم في مثالنا</th>
+                        </tr>
+                        <tr>
+                            <td>حجم الشجرة (Volume)</td>
+                            <td>عدد العقد الكلي في الشجرة</td>
+                            <td>13</td>
+                        </tr>
+                        <tr>
+                            <td>عرض الشجرة (Width)</td>
+                            <td>العدد الأعظمي للعقد في مستوى واحد</td>
+                            <td>6 (في المستوى 2)</td>
+                        </tr>
+                        <tr>
+                            <td>عدد الوصلات (Edges)</td>
+                            <td>عدد الوصلات في الشجرة</td>
+                            <td>حجم الشجرة - 1 = 12</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- تطبيقات الأشجار -->
+                <div class="section" id="applications">
+                    <h2><i class="fas fa-laptop-code"></i> تطبيقات الأشجار</h2>
+                    
+                    <div class="tree-representation">
+                        <div class="representation-card">
+                            <h3><i class="fas fa-folder"></i> أنظمة الملفات</h3>
+                            <p>تنظيم المجلدات والملفات في نظم التشغيل بشكل هرمي</p>
+                            <div style="text-align: center; margin: 15px 0; font-size: 3rem; color: #3498db;">
+                                <i class="fas fa-folder-tree"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-search"></i> أشجار البحث</h3>
+                            <p>أشجار البحث الثنائية (BST) للبحث السريع</p>
+                            <div style="text-align: center; margin: 15px 0; font-size: 3rem; color: #e74c3c;">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-database"></i> قواعد البيانات</h3>
+                            <p>فهرسة البيانات باستخدام أشجار B و B+</p>
+                            <div style="text-align: center; margin: 15px 0; font-size: 3rem; color: #27ae60;">
+                                <i class="fas fa-database"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fas fa-code"></i> تطبيقات أخرى:</h3>
+                    <ul>
+                        <li>تمثيل العبارات الرياضية (Expression Trees)</li>
+                        <li>أشجار اتخاذ القرار (Decision Trees)</li>
+                        <li>شجرة الكومة (Heap) لفرز البيانات</li>
+                        <li>تحليل الصياغة في المترجمات (Syntax Trees)</li>
+                        <li>بناء القواميس المعجمية (Dictionaries)</li>
+                        <li>الشبكات الحاسوبية (Spanning Trees)</li>
+                    </ul>
+                </div>
+                
+                <!-- تمثيل الأشجار -->
+                <div class="section" id="representation">
+                    <h2><i class="fas fa-project-diagram"></i> تمثيل الأشجار</h2>
+                    
+                    <div class="tree-representation">
+                        <div class="representation-card">
+                            <h3><i class="fas fa-list"></i> القوائم الخطية</h3>
+                            <p>تمثيل الشجرة باستخدام الأقواس المتداخلة</p>
+                            <div class="code-block">
+                                A(B(E(K,L),F),C(G),D(H(M)),J))
+                            </div>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-link"></i> القوائم المترابطة</h3>
+                            <p>كل عقدة تحتوي على بيانات وروابط للأبناء</p>
+                            <div class="code-block">
+                                struct Node {<br>
+                                &nbsp;&nbsp;int data;<br>
+                                &nbsp;&nbsp;Node* children[];<br>
+                                };
+                            </div>
+                        </div>
+                        
+                        <div class="representation-card">
+                            <h3><i class="fas fa-child"></i> الابن الأيسر - الأخ الأيمن</h3>
+                            <p>تمثيل باستخدام ابن أيسر وأخ أيمن</p>
+                            <div class="code-block">
+                                struct Node {<br>
+                                &nbsp;&nbsp;int data;<br>
+                                &nbsp;&nbsp;Node* leftChild;<br>
+                                &nbsp;&nbsp;Node* rightSibling;<br>
+                                };
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fas fa-exchange-alt"></i> تحويل التمثيل إلى أشجار ثنائية:</h3>
+                    <p>بتدوير تمثيل "الابن الأيسر - الأخ الأيمن" بزاوية 45 درجة نحصل على شجرة ثنائية:</p>
+                    
+                    <div class="visualization">
+                        <div class="tree-diagram">
+                            <div class="tree-level">
+                                <div class="tree-node root">A</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node">B</div>
+                                <div class="tree-node">C</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node">E</div>
+                                <div class="tree-node">F</div>
+                                <div class="tree-node">G</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الأشجار الثنائية -->
+                <div class="section" id="binary">
+                    <h2><i class="fas fa-binary"></i> الأشجار الثنائية</h2>
+                    
+                    <p>الشجرة الثنائية هي شجرة حيث كل عقدة لها على الأكثر <span class="highlight">ابنان (ابن أيسر وابن أيمن)</span>.</p>
+                    
+                    <div class="visualization">
+                        <div class="tree-diagram">
+                            <div class="tree-level">
+                                <div class="tree-node root">A</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node">B</div>
+                                <div class="tree-node">C</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node">D</div>
+                                <div class="tree-node">E</div>
+                                <div class="tree-node">F</div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node leaf">G</div>
+                                <div class="tree-node leaf">H</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fas fa-code"></i> تعريف الشجرة الثنائية:</h3>
+                    <div class="code-block">
+                        // الشجرة الثنائية هي:
+                        // 1. شجرة فارغة (∅)
+                        // 2. أو تتكون من:
+                        //    - عقدة جذر
+                        //    - شجرة ثنائية يسارية
+                        //    - شجرة ثنائية يمينية
+                    </div>
+                    
+                    <h3><i class="fas fa-exclamation-triangle"></i> الفروقات بين الأشجار الثنائية والأشجار العامة:</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>النقطة</th>
+                            <th>الشجرة العامة</th>
+                            <th>الشجرة الثنائية</th>
+                        </tr>
+                        <tr>
+                            <td>الشجرة الفارغة</td>
+                            <td>غير مسموحة</td>
+                            <td>مسموحة</td>
+                        </tr>
+                        <tr>
+                            <td>تمييز الأبناء</td>
+                            <td>لا يوجد تمييز</td>
+                            <td>ابن أيسر وابن أيمن</td>
+                        </tr>
+                        <tr>
+                            <td>الدرجة القصوى</td>
+                            <td>غير محددة</td>
+                            <td>2</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- الخلاصة -->
+                <div class="section" id="conclusion">
+                    <h2><i class="fas fa-graduation-cap"></i> الخلاصة</h2>
+                    
+                    <div class="note">
+                        <i class="fas fa-lightbulb"></i> <strong>الأشجار الثنائية:</strong> هي بنى معطيات هرمية غير خطية حيث كل عقدة لها على الأكثر ابنان (ابن أيسر وابن أيمن).
+                    </div>
+                    
+                    <h3><i class="fas fa-check-circle"></i> مميزات الأشجار الثنائية:</h3>
+                    <ul>
+                        <li>كفاءة عالية في عمليات البحث والإدراج والحذف</li>
+                        <li>سهولة التمثيل في الذاكرة</li>
+                        <li>تستخدم كأساس للعديد من بنى المعطيات المتقدمة</li>
+                        <li>مناسبة للتطبيقات التي تتطلب اتخاذ قرارات ثنائية</li>
+                    </ul>
+                    
+                    <h3><i class="fas fa-project-diagram"></i> في المحاضرة القادمة:</h3>
+                    <p>سنستكمل مع أشجار البحث الثنائية (Binary Search Trees) وتطبيقاتها في البحث والفرز.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>جامعة حمص - كلية الهندسة المعلوماتية | الخوارزميات وبُنى المعطيات 1 | المحاضرة الثالثة عشر</p>
+            <p>إعداد: د. ناديا خرسان | جميع الحقوق محفوظة © 2025</p>
+        </div>
+        
+        <div class="back-to-top" id="backToTop">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+    </div>
+
+    <script>
+        // تفاعلية القائمة الجانبية
+        document.querySelectorAll('.sidebar li a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // إزالة النشاط من جميع العناصر
+                document.querySelectorAll('.sidebar li').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                // إضافة النشاط للعنصر المحدد
+                this.parentElement.classList.add('active');
+                
+                // التمرير إلى القسم المقابل
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // إضافة تأثيرات للعناصر عند التمرير
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            const sidebarLinks = document.querySelectorAll('.sidebar li a');
+            const backToTop = document.getElementById('backToTop');
+            
+            // إظهار/إخفاء زر العودة للأعلى
+            if (window.scrollY > 500) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+            
+            // تحديث القائمة الجانبية حسب القسم الظاهر
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (window.scrollY >= (sectionTop - 150)) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            sidebarLinks.forEach(link => {
+                link.parentElement.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.parentElement.classList.add('active');
+                }
+            });
+        });
+        
+        // العودة للأعلى
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // تهيئة العناصر قبل التمرير
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(50px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        });
+        
+        // تشغيل تأثير الظهور الأولي
+        setTimeout(() => {
+            document.querySelectorAll('.section').forEach((section, index) => {
+                setTimeout(() => {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+        }, 500);
+        
+        // تفاعلية العقد في الأشجار
+        document.querySelectorAll('.tree-node').forEach(node => {
+            node.addEventListener('click', function() {
+                this.classList.toggle('highlight');
+            });
+        });
+    </script>
+</body>
+</html>
